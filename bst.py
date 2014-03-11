@@ -74,7 +74,7 @@ class Bst:
 
 
     def delete(self, key):
-        self._delete_helper(self.root, key)
+            self._delete_helper(self.root, key)
 
     #recursive solution
     # node - node to start search for key
@@ -99,36 +99,36 @@ class Bst:
 
                     self._delete_helper(successor, successor.key)
                 # node has left child only
-                elif node.left:
-                    if node.parent:
-                        if node.parent.left is node:
-                            node.parent.left = node.left
+                else:
+                    if node.left:
+                        if node.parent:
+                            if node.parent.left is node:
+                                node.parent.left = node.left
+                            else:
+                                node.parent.right = node.left
+                            node.left.parent = node.parent
                         else:
-                            node.parent.right = node.left
-                        node.left.parent = node.parent
-                    else:
-                        self.root = node.left
-                # node has right child only
-                elif node.right:
-                    if node.parent:
-                        if node.parent.right is node:
-                            node.parent.right = node.right
+                            self.root = node.left
+                    # node has right child only
+                    elif node.right:
+                        if node.parent:
+                            if node.parent.right is node:
+                                node.parent.right = node.right
+                            else:
+                                node.parent.right = node.right
+                            node.right.parent = node.parent
                         else:
-                            node.parent.right = node.right
-                        node.right.parent = node.parent
-                    else:
-                        self.root = node.right
-                # node has no children
-                else: 
-                    if node.parent:
-                        if node.parent.left is node:
-                            node.parent.left = None
+                            self.root = node.right
+                    # node has no children
+                    else: 
+                        if node.parent:
+                            if node.parent.left is node:
+                                node.parent.left = None
+                            else:
+                                node.parent.right = None
                         else:
-                            node.parent.right = None
-                    else:
-                        self.root = None
-            self.size -= 1
-
+                            self.root = None
+                    self.size -= 1
 
     
     def traverse(self, func, order):
