@@ -6,60 +6,13 @@ class Node:
         self.right = right
         self.parent = parent
 
-    def find_min(self):
-        min_item = self.item
-        tree = self.left
-        while (tree is not None):
-           min_item = tree
-           tree = tree.left
-        return min_item
-
-    def find_max(self):
-        max_item = self.item
-        tree = self.right
-        while (tree is not None):
-           max_item = tree
-           tree = tree.right
-        return max_item
-
-    def bin_ins(self, node):
-        if node.item <= self.item:
-            if self.left is None:
-                self.left = node
-                node.parent = self
-            else:
-                self.bin_ins(self.left, node)
-        else:
-            if self.right is None:
-                self.right = node
-                node.parent = self
-            else:
-                self.bin_ins(self.right, node)
-
-    def bin_del(self, key):
-        if key < self.key:
-            self.left.bin_del(key)
-        elif key > self.key:
-            self.right.bin_del(key)
-        else:
-            #found key, now delete it
-
-            # if node has two children
-            if self.left and self.right:
-                successor = self.right.find_min_node()
-                self.key = successor.key
-                successor.bin_del(successor.key)
-            elif self.left:
-                if self.parent:
-                    if self is self.parent.left:
-                        self.parent.left = successor
-
-            pass
-
-
-    def replace_
+    
 class Bst:
-    """A simple Binary Search Tree"""
+    """A simple Binary Search Tree
+    
+    Implementation uses nodes with parent pointers.  
+    Might be useful later for balancing trees.
+    """
 
     def __init__(self, root = None):
         self.root = root
@@ -78,22 +31,106 @@ class Bst:
         return node
     
     def find_min(self):
-        self.root.find_min()
-    
-    def find_max(self):
-        self.root.find_max()
+        node = self._find_min_node()
+        return node.item
 
-    def insert(self, item):
-        node = Node(item)
+    def _find_min_node(self, root):
+        node = root
+        while node.left:
+            node = node.left
+        return node
+ 
+    def find_max(self):
+        node = self._find_max_node()
+        return node.item
+   
+    def _find_max_node(self, root):
+        node = root
+        while node.right:
+            node = node.right
+        return node
+
+    def insert(self, key, value):
+        node = Node(key, value)
         if self.root is None:
             self.root = node
         else:
-            self.root.bin_ins(node)
+            self._insert_helper(self.root, node)
+        self.size += 1
+
+    def _insert_helper(self, node, new_node):
+        if new_node.item <= node.item:
+            if node.left is None:
+                node.left = new_node
+                new_node.parent = node
+            else:
+                self._insert_helper(node.left, new_node)
+        else:
+            if node.right is None:
+                node.right = new_node
+                new_node.parent = node
+            else:
+                self._insert_helper(node.right, new_node)
+
+
+    def delete(self, key):
+        self._delete_helper(self.root, key)
+
+    #recursive solution
+    # node - node to start search for key
+    # key - key to delete
+    def _delete_helper(self, node, key):
+        if node is None:
+            raise KeyError(str(key))
+        else:
+            if key < self.key:
+                node = node.left
+                self._delete_helper(node, key)
+            elif key > self.key:
+                node = node.right
+                self._delete_helper(node, key)
+            else:
+                #found key, now delete it
+                # node has two children
+                if node.left and node.right:
+                    successor = self._find_min_node(node.right)
+                    node.key = successor.key
+                    node.item = successor.item
+
+                    self._delete_helper(successor, successor.key)
+                # node has left child only
+                elif node.left:
+                    if node.parent:
+                        if node.parent.left is node:
+                            node.parent.left = node.left
+                        else:
+                            node.parent.right = node.left
+                        node.left.parent = node.parent
+                    else:
+                        self.root = node.left
+                # node has right child only
+                elif node.right:
+                    if node.parent:
+                        if node.parent.right is node:
+                            node.parent.right = node.right
+                        else:
+                            node.parent.right = node.right
+                        node.right.parent = node.parent
+                    else:
+                        self.root = node.right
+                # node has no children
+                else: 
+                    if node.parent:
+                        if node.parent.left is node:
+                            node.parent.left = None
+                        else:
+                            node.parent.right = None
+                    else:
+                        self.root = None
+            self.size -= 1
+
 
     
-    def delete(self, item):
-        pass
-
     def traverse(self, func, order):
         if order is 'in':
             self.inOrderTrav(self.root, func)
@@ -128,5 +165,6 @@ class Bst:
             self.postOrderTrav(node.right, func)
             func(node)
 
-
+    def printTree(self):
+        pass        
 
