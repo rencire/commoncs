@@ -1,3 +1,4 @@
+# mergesort
 def mergesort(list):
 
     if len(list) < 2:
@@ -27,6 +28,7 @@ def merge(left, right):
     
     return result
 
+# qsort
 import random
 
 def quicksort(list):
@@ -39,3 +41,36 @@ def quicksort(list):
         greater = [x for x in list if x > pivot] 
 
         return quicksort(lesser) + [pivot] + quicksort(greater)
+
+# qsort from Skiena.  More efficient than above since we are not
+# constantly creating new lists.
+
+def quicksort2(lst, l, h):
+    if l < h:
+        p = partition(lst, l, h)
+        quicksort2(lst, l, p - 1)
+        quicksort2(lst, p + 1, h)
+
+
+def partition(lst, l, h):
+    first_high = l
+    p = h
+
+    for i in range(l, h):
+        if lst[i] < lst[p]:
+            tmp = lst[i]
+            lst[i] = lst[first_high]
+            lst[first_high] = tmp
+
+            first_high += 1
+    
+    tmp = lst[p]
+    lst[p] = lst[first_high]
+    lst[first_high] = tmp
+    
+    return first_high
+
+
+
+
+
