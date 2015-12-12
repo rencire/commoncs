@@ -1,6 +1,25 @@
 require 'awesome_print'
 require 'set'
 
+class TreeNode
+  attr_reader :id
+  attr_accessor :children
+
+  def initialize(id:)
+    @id = id
+    @children = []
+  end
+
+  def add_child(node)
+    @children.push(node)
+  end
+
+  def print_tree
+
+  end
+
+end
+
 class Vertex
   attr_reader :id
   attr_accessor :parent
@@ -118,27 +137,23 @@ def bfs(graph:, start:, on_pre: -> (v){}, on_edge: -> (x,y){}, on_post: ->(v){})
   start.discovered = true
 
   until queue.empty?
-    # puts "queue in bfs: #{queue}"
     v = queue.shift()
-    # puts "v in bfs: #{v}"
     on_pre.call(v)
 
     graph.neighbors(v).each do |n|
 
-      # on_edge.call(v, n) if (not n.processed? or graph.directed?)
-
-      # puts "neighbor #{n}"
       unless n.discovered?
         n.parent = v
         n.discovered = true
         queue.push(n)
-        # puts "pushed neighbor #{n}"
       end
+
+      on_edge.call(v, n) if (not n.processed? or graph.directed?)
 
     end
 
     v.processed = true
-    # on_post.call(v)
+    on_post.call(v)
 
   end
 end
@@ -150,12 +165,23 @@ end
 # TODO write method to print BFS traversal tree
 def print_search_tree(graph, strategy: :bfs)
   if strategy == :bfs
+    root = nil
+
     on_post = lambda do |v|
-      puts v.id
+      current_root = TreeNode.new(v.id)
+      root = current_root if root.nil?
     end
 
-    bfs(graph: graph, start: graph.vertices.first, on_post: on_post)
+    on_edge = lambda do |x,y|
+      # TODO u
+      # if y.parent = x,
+      #   current_root.addChild(TreeNode.new(x.id)
+    end
+
+    bfs(graph: graph, start: graph.vertices.first, on_edge: on_edge, on_post: on_post)
   end
+
+  root.print_tree()
 
 end
 
@@ -191,9 +217,7 @@ def gen_graph(connected: true)
   graph
 end
 
-
-gen_graph()
-# print_search_tree(gen_graph())
+print_search_tree(gen_graph())
 
 
 
