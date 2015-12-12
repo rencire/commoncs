@@ -1,5 +1,6 @@
 require 'awesome_print'
 require 'set'
+require 'graphviz'
 
 class TreeNode
   attr_reader :id
@@ -142,13 +143,14 @@ def bfs(graph:, start:, on_pre: -> (v){}, on_edge: -> (x,y){}, on_post: ->(v){})
 
     graph.neighbors(v).each do |n|
 
+      on_edge.call(v, n) if (not n.processed? or graph.directed?)
+
       unless n.discovered?
         n.parent = v
         n.discovered = true
         queue.push(n)
       end
 
-      on_edge.call(v, n) if (not n.processed? or graph.directed?)
 
     end
 
@@ -160,47 +162,54 @@ end
 
 
 
-
-
-# TODO write method to print BFS traversal tree
 def print_search_tree(graph, strategy: :bfs)
-  if strategy == :bfs
-    root = nil
+  tree = GraphViz.new( :G, :type => :graph )
 
-    on_post = lambda do |v|
-      current_root = TreeNode.new(v.id)
-      root = current_root if root.nil?
+  if strategy == :bfs
+    on_pre = lambda do |v|
+      tree.add_node(v.id)
     end
 
     on_edge = lambda do |x,y|
-      # TODO u
-      # if y.parent = x,
-      #   current_root.addChild(TreeNode.new(x.id)
+      from = tree.get_node(x.id)
+
+      unless y.discovered? # tree edge
+        to = tree.add_node(y.id)
+        tree.add_edge(from, to)
+      else # cross edge
+        # grab y from tree since we've already 'discovered' it
+        to = tree.get_node(y.id)
+        tree.add_edge(from, to, dir: 'forward', constraint: false)
+      end
     end
 
-    bfs(graph: graph, start: graph.vertices.first, on_edge: on_edge, on_post: on_post)
+    bfs(graph: graph, start: graph.vertices.first, on_pre: on_pre, on_edge: on_edge)
   end
 
-  root.print_tree()
+  filename = "traversal.png"
+  tree.output( :png => filename )
+  exec "open #{filename}"
 
 end
 
 # quick and dirty 'connected' graph generator
+#
+# NOTE:
+#  - Graph seems too connected with current invariant of having > 2 outdegree for each vertex.
+#
 def gen_graph(connected: true)
   graph = Graph.new()
 
-  ('A'..'E').each { |char| graph.add_vertex(Vertex.new(id: char)) }
+  ('A'..'G').each { |char| graph.add_vertex(Vertex.new(id: char)) }
 
-
-  # need a minimum spanning graph alg?
 
   all_possible_edges = graph.vertices.permutation(2)
 
   all_possible_edges.to_a.shuffle.each do |pair|
 
-
+      # Graph is guaranteed to be connected if out-degree of each vertext is at least 2
       # To make graph less connected, introduce a probability for adding
-      # extra edges for vertices with an out-degree of 2
+      # extra edges for vertices which already have an out-degree of 2
     if graph.degree(pair[0]) < 2 or (graph.degree(pair[0]) >= 2 and rand() < 0.10)
 
       graph.add_edge(from: pair[0], to: pair[1])
