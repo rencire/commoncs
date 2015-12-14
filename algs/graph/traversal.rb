@@ -185,8 +185,8 @@ def dfs(graph:, vertex:, on_pre: -> (v){}, on_edge: -> (x,y){}, on_post: ->(v){}
       n.parent = vertex
       on_edge.call(vertex, n)
       time = dfs(graph: graph, vertex: n, on_pre: on_pre, on_edge: on_edge, on_post: on_post, time: time)
-    elsif (!n.processed? and vertex.parent != n) or graph.directed?
-      # puts "vertex: #{vertex.id}, n: #{n.id}, n.parent: #{n.parent}"
+    elsif (vertex.parent != n and !n.processed?) or graph.directed?
+      puts "vertex: #{vertex.id}, n: #{n.id}, n_obj: #{n}, vertex.parent_obj: #{vertex.parent}"
       on_edge.call(vertex, n)
     end
   end
@@ -204,7 +204,8 @@ end
 
 # TODO handle directed edges
 def draw_graph(graph)
-  g = GraphViz.new(:G, :type => :graph)
+  type = graph.directed? ? :digraph : :graph
+  g = GraphViz.new(:G, :type => type)
   graph.vertices().each do |v|
     g.add_node(v.id)
   end
@@ -215,8 +216,17 @@ def draw_graph(graph)
     from = g.get_node(x.id)
     edges.each do |y|
       to = g.get_node(y.id)
-      g.add_edge(from, to) unless added_edges.include?([to, from])
-      added_edges.add([from, to])
+
+      if graph.directed?
+        # draw each individual 'directed' edge
+        g.add_edge(from, to)
+      else
+        # draw only one edge to represent 'undirected' edge
+        g.add_edge(from, to) unless added_edges.include?([to, from])
+        added_edges.add([from, to])
+      end
+
+
     end
   end
 
@@ -237,10 +247,10 @@ def draw_search_tree(graph, strategy: :bfs)
     on_edge = lambda do |x,y|
       from = tree.get_node(x.id)
 
-      unless y.discovered? # tree edge
+      if !y.discovered? # tree edge
         to = tree.add_node(y.id)
         tree.add_edge(from, to)
-      else # cross edge
+      else # cross edge for undirected graph. could also be back (maybe forward?) edge for directed graphs
         # grab y from tree since we've already 'discovered' it
         to = tree.get_node(y.id)
         tree.add_edge(from, to, dir: 'forward', constraint: false)
@@ -298,11 +308,27 @@ end
 # quick and dirty 'connected' graph generator
 #
 # NOTE:
-#  - Graph seems too connected with current invariant of having > 2 outdegree for each vertex.
+#  - Currently we are ensuring the graph is connected by running DFS on itself
+#    after everytime we add an edge.
+#
+#    Consider building a minimum spanning tree instead.
 #
 # TODO handle generatng directed edges
-def gen_graph(connected: true)
-  graph = Graph.new()
+#  - for directed graphs, current strategy of checking for connectivity is not
+#     optimal.
+#
+#     Consider the situation where we add edges until all nodes are
+#     'connected', and the starting vertex for traversal is a 'sink'.
+#
+#     Since it's a sink, DFS cannot visit any other vertex, and thus `gen_graph()`
+#     will continue adding edges until DFS can traverse other nodes.
+#
+#     This behavior can add a lot of unecessary edges, such as both (A->B) and
+#     (B->A). As a result, the graph will be very connected, and look messy.
+#
+#
+def gen_graph(connected: true, directed: false)
+  graph = Graph.new(directed: directed)
 
   ('A'..'G').each { |char| graph.add_vertex(Vertex.new(id: char)) }
 
