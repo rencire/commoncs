@@ -203,6 +203,13 @@ def dfs(graph:, vertex:, on_pre: -> (v){}, on_edge: -> (x,y){}, on_post: ->(v){}
 end
 
 # TODO handle directed edges
+#
+# Helpful links for using GraphViz library:
+#
+# https://github.com/glejeune/Ruby-Graphviz
+# http://www.rubydoc.info/github/glejeune/Ruby-Graphviz
+# http://www.graphviz.org/doc/info/attrs.html
+#
 def draw_graph(graph)
   type = graph.directed? ? :digraph : :graph
   g = GraphViz.new(:G, :type => type)
