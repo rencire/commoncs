@@ -8,6 +8,7 @@ class Trie
   end
 
   def insert(str)
+
     if str.empty?
       puts "Empty string given"
       return
@@ -16,9 +17,11 @@ class Trie
     first_char = str[0]
     rest_of_str = str[1..-1]
 
+    # Empty trie
     if @root.nil?
       @root = Node.new(first_char)
       add_new_path(@root, rest_of_str)
+      puts "Finished adding #{str} to trie"
       return
     end
 
@@ -28,13 +31,15 @@ class Trie
       return
     end
 
-    # Walk tree to find leaf node
+    # Now lets Walk tree to find leaf node
     leaf = @root
-    child = leaf.children.find {|n| n.item == rest_of_str[0]}
 
-    unless rest_of_str.empty? or child.nil?
-      leaf = child
+    unless rest_of_str.empty?
       child = leaf.children.find {|n| n.item == rest_of_str[0]}
+
+      break if child.nil?
+
+      leaf = child
       rest_of_str = rest_of_str[1..-1]
     end
 
@@ -44,10 +49,10 @@ class Trie
       return
     end
 
-    # Otherwise, we add new path of remaining chars to trie
+    # Otherwise, we found leaf node. Now we add new path of remaining chars to trie
     add_new_path(leaf, rest_of_str)
+    puts "Finished inserting #{str} to trie"
   end
-
 
 
   def add_new_path(leaf, str)
@@ -56,10 +61,8 @@ class Trie
       leaf.children.push(new_leaf)
       leaf = new_leaf
     end
+    puts "Inserted rest of string to trie: #{str}"
   end
 
-
-  def search(str)
-  end
 
 end
