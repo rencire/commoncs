@@ -1,68 +1,98 @@
-class Node < Struct.new(:item, :children)
-  def intialize(item: nil, children: []); super(item, children) end
+# High level implementation of a Trie
+
+class Node
+  attr_accessor :value, :key
+  def initialize(key: '', val: nil, children: [])
+    @key = key
+    @value = val
+    @children = children
+  end
+
+  def get_child(char)
+    @children.find {|n| n.key == char}
+  end
+
+  def add_child(node)
+    @children.push(node)
+  end
 end
+
+
+
+# TODO
+# Implement a Ternary Search tree, as it combines the time efficiency of a full trie (digital search tree) with the space efficiency of a binary search tree
+#
+# Current implementation is a basic Trie.
+
+# https://en.wikipedia.org/wiki/Trie
+# https://en.wikipedia.org/wiki/Trie#cite_note-brass-2
+# http://web.archive.org/web/20080623071352/http://www.ddj.com/windows/184410528
+# https://github.com/kanwei/algorithms/blob/master/lib/containers/trie.rb
 
 class Trie
 
   def initialize
+    @root = Node.new
   end
 
-  def insert(str)
 
+  # TODO
+  # Iterative implementation.  Try recursive
+  #
+  # insert("abc", 3) will overwrite previous insertion of "abc".
+  #
+  # Time Complexity: O(N)
+  def insert(str:, val:)
     if str.empty?
-      puts "Empty string given"
-      return
+      raise "Empty string given"
     end
 
-    first_char = str[0]
-    rest_of_str = str[1..-1]
+    i = 0
+    n = str.length
 
-    # Empty trie
-    if @root.nil?
-      @root = Node.new(first_char)
-      add_new_path(@root, rest_of_str)
-      puts "Finished adding #{str} to trie"
-      return
-    end
-
-    # Trie has only one root, so first char must match root
-    if @root.item != first_char
-      puts "Root does not match first char of given string: #{str}"
-      return
-    end
-
-    # Now lets Walk tree to find leaf node
-    leaf = @root
-
-    unless rest_of_str.empty?
-      child = leaf.children.find {|n| n.item == rest_of_str[0]}
-
+    # Now lets Walk tree to find node w/ character as key
+    node = @root
+    while i < n
+      child = node.get_child(str[i])
       break if child.nil?
-
-      leaf = child
-      rest_of_str = rest_of_str[1..-1]
-    end
-
-    # If we found all chars, exit
-    if rest_of_str.empty?
-      puts "String '#{str}' Already exists in trie"
-      return
+      node = child
+      i = i + 1
     end
 
     # Otherwise, we found leaf node. Now we add new path of remaining chars to trie
-    add_new_path(leaf, rest_of_str)
-    puts "Finished inserting #{str} to trie"
-  end
-
-
-  def add_new_path(leaf, str)
-    str.chars.each do |c|
-      new_leaf = Node.new(c)
-      leaf.children.push(new_leaf)
-      leaf = new_leaf
+    while i < n
+      new_leaf = Node.new(key: str[i])
+      node.add_child(new_leaf)
+      node = new_leaf
+      i = i + 1
     end
-    puts "Inserted rest of string to trie: #{str}"
+
+    node.value = val
+
   end
 
+  # TODO
+  # Iterative implementation.  Try recursive
+  #
+  # Time Complexity: O(N)
+  def get(str:)
+    i = 0
+    n = str.length
+
+    node = @root
+    while i < n
+      child = node.get_child(str[i])
+      # key not found
+      return nil if child.nil?
+      node = child
+      i = i + 1
+    end
+
+    node.value
+  end
+
+  def pretty_print
+    # TODO
+  end
 
 end
