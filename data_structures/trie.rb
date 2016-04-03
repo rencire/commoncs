@@ -1,4 +1,19 @@
 # High level implementation of a Trie
+#
+#
+# Links:
+# https://en.wikipedia.org/wiki/Trie
+# https://en.wikipedia.org/wiki/Trie#cite_note-brass-2
+# http://web.archive.org/web/20080623071352/http://www.ddj.com/windows/184410528
+# https://github.com/kanwei/algorithms/blob/master/lib/containers/trie.rb
+#
+#
+#
+# If considering using a trie to store dictionary words, consider
+# using a Deterministic Acyclic Finite State Automata (DAFSA)
+#
+# https://en.wikipedia.org/wiki/Deterministic_acyclic_finite_state_automaton
+#
 
 class Node
   attr_accessor :value, :key
@@ -23,11 +38,6 @@ end
 # Implement a Ternary Search tree, as it combines the time efficiency of a full trie (digital search tree) with the space efficiency of a binary search tree
 #
 # Current implementation is a basic Trie.
-
-# https://en.wikipedia.org/wiki/Trie
-# https://en.wikipedia.org/wiki/Trie#cite_note-brass-2
-# http://web.archive.org/web/20080623071352/http://www.ddj.com/windows/184410528
-# https://github.com/kanwei/algorithms/blob/master/lib/containers/trie.rb
 
 class Trie
 
