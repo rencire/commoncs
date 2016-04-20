@@ -8,6 +8,8 @@ end
 
 class Graph
 
+
+
 end
 
 class SearchState
@@ -24,10 +26,75 @@ class SearchState
 
 end
 
+
+
+# Include all common graph traversal algs
+# DFS, BFS, etc.
+#
+# TODO does it make sense for this to be a class or a module?
+# Do we need to instantiate a 'Traversal'?
+#
+# Or is it more of a collection of helper methods?
+module Traversal
+
+  def self.dfs(graph:, v:, proc_early: ->(){}, proc_edge: ->(){}, proc_late: ->(){})
+    self._dfs(graph, v, proc_early, proc_edge, proc_late, SearchState.new)
+  end
+
+  def self.bfs
+
+  end
+
+  private_class_method
+
+  def self._dfs(graph, v, proc_early, proc_edge, proc_late, state)
+    state.discovered[v] = true
+    state.entry_time[v] = state.time
+    # puts "pre: #{time}"
+    state.time = state.time + 1
+
+    proc_early.call(v)
+
+    graph.neighbors(v).each do |n|
+      if !state.discovered[n]
+        state.parent[n] = v
+        proc_edge.call(v, n)
+        self._dfs(
+          graph,
+          n,
+          proc_early,
+          proc_edge,
+          proc_late,
+          state
+        )
+      elsif (state.parent[v] != n and !state.processed[n]) or graph.directed?
+        # puts "vertex: #{vertex.id}, n: #{n.id}, n_obj: #{n}, vertex.parent_obj: #{vertex.parent}"
+        proc_edge.call(v, n)
+      end
+    end
+
+    proc_late.call(v)
+
+    state.exit_time[v] = state.time
+    # puts "post: #{time}"
+    state.time = state.time + 1
+    state.processed[v] = true
+  end
+
+  def self._bfs()
+
+  end
+
+
+end
+
+
+
+
 # Articulation Vertices
 #
+
 module AV
-  include Traversal
 
   # Given a graph, finds the articulation vertices
   # Graph must be undirected, otherwise behavior undefined.
@@ -54,74 +121,10 @@ module AV
     end
 
     # pick arbitrary starting node
-    dfs(graph: graph, start: graph.random_vertex,
+    Traversal.dfs(graph: graph, start: graph.random_vertex,
         proc_early: proc_early, proc_edge:  proc_edge, proc_late: proc_late)
 
   end
 
 
-
 end
-
-
-# Include all common graph traversal algs
-# DFS, BFS, etc.
-#
-# TODO does it make sense for this to be a class or a module?
-# Do we need to instantiate a 'Traversal'?
-#
-# Or is it more of a collection of helper methods?
-module Traversal
-
-  @@state = SearchState.new
-
-  def self.dfs(graph:, v:, proc_early: ->(){}, proc_edge: ->(){}, proc_late: ->(){})
-    @@state.discovered[v] = true
-    @@state.entry_time[v] = @@state.time
-    # puts "pre: #{time}"
-    @@state.time = @@state.time + 1
-
-    proc_early.call(v)
-
-    graph.neighbors(v).each do |n|
-      if !@@state.discovered[n]
-        @@state.parent[n] = v
-        proc_edge.call(v, n)
-        self.dfs(
-          graph: graph,
-          vertex: n,
-          proc_early: proc_early,
-          proc_edge: proc_edge,
-          proc_late: proc_late
-        )
-      elsif (@@state.parent[v] != n and !@@state.processed[n]) or graph.directed?
-        # puts "vertex: #{vertex.id}, n: #{n.id}, n_obj: #{n}, vertex.parent_obj: #{vertex.parent}"
-        proc_edge.call(v, n)
-      end
-    end
-
-    proc_late.call(v)
-
-    @@state.exit_time[v] = @@state.time
-    # puts "post: #{time}"
-    @@state.time = @@state.time + 1
-    @@state.processed[v] = true
-  end
-
-  def bfs
-
-  end
-
-  # TODO
-  # Need to make this method private somehow...
-
-  def _dfs()
-
-  end
-
-
-
-end
-
-
-
