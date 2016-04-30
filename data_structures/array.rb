@@ -4,17 +4,17 @@
 
 class TypeArray
 
-  def initialize(type: Object, size:)
+  attr_reader :size
 
+  def initialize(type: Object, size:)
     raise(TypeError, "Type must be a Class", caller) unless type.kind_of? Class
     raise(TypeError, "Size must be an Integer", caller) unless size.kind_of? Integer
-    raise(TypeError, "Load Factor must be a BigDecimal", caller) unless load_factor.kind_of? Float
 
     @type = type
     @size = size
 
     # - No `Boolean` class in ruby, hence not handling that case.
-    # - No `Char` class either, hence using String instead. Hence, each cell in array can potentially have more than a char.
+    # - No `Char` class either, hence using String instead. Each cell in array can potentially have more than a char.
 
     # TODO
     # - Explore other alternatives to this.
