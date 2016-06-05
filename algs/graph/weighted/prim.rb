@@ -1,27 +1,28 @@
 # Prim's algorithm
 
+require 'set'
 
 def prim(graph, start)
 
   parent = Hash.new {-1}
   distance = Hash.new {FLOAT::INFINITY}
-  in_tree = Hash.new {false}
+  tree = Set.new
 
 
   v = start
   until v.nil?
-    in_tree[v] = true
+    tree.add(v)
 
     # e is an EdgeNode.  It has weight `w` and destination vertex `to`
     graph.edges(v).each do |edge|
-      to = edge.to
-      if !in_tree[to] and edge.weight < distance[to]
-        distance[to] = edge.weight
-        parent[to] = v
+      w = edge.vertex
+      if (not tree.member? w) and (edge.weight < distance[w])
+        distance[w] = edge.weight
+        parent[w] = v
       end
     end
 
-    v = graph.vertices.select{|v| !in_tree[v] }.min_by {|v| distance[v] }
+    v = graph.vertices.select{|v| not tree.member? v }.min_by {|v| distance[v] }
 
   end
 end
