@@ -2,6 +2,9 @@
 
 require 'set'
 
+
+EdgeNode = Struct.new(:weight, :vertex)
+
 def prim(graph, start)
 
   parent = Hash.new {-1}
@@ -13,7 +16,6 @@ def prim(graph, start)
   until v.nil?
     tree.add(v)
 
-    # e is an EdgeNode.  It has weight `w` and destination vertex `to`
     graph.edges(v).each do |edge|
       w = edge.vertex
       if (not tree.member? w) and (edge.weight < distance[w])
