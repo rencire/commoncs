@@ -1,10 +1,60 @@
 # Eric Ren 2016
 
+
 from datastructs.graph import Graph
+from collections import defaultdict
+
+
+"""
+Psuedocode Adapted from Skiena 2008
+
+
+Prim(G)
+  Select an arbitrary vertex `s` to start tree from
+  While (there exists nontree vertices)
+      Select edge of minimum weight betwee a tree and nontree vertex
+      Add the selected edge and vertex to the tree Tprim
 
 """
 
-Algorithm Adapted from Skiena 2008
+
+
+def prim(graph, start):
+    parent = defaultdict(lambda: None)
+    distance = defaultdict(lambda: float('inf'))
+    tree = set()
+    v = start
+
+    while v not in tree:
+        tree.add(v)
+
+        # update each of v's edges
+        for edge in graph.edges(v):
+            weight = edge.weight
+            w = edge.vertex
+            if (w not in tree) and (weight < distance[w]):
+                distance[w] = weight
+                parent[w] = v
+
+        # select the vertex with min edge weight to MST
+        v = min([v for v in graph.vertices if v not in tree], key=lambda v: distance[v])
+
+
+
+
+
+# Test Prim code here:
+
+
+
+
+
+
+
+
+"""
+
+Psuedocode Adapted from Skiena 2008
 
 PsuedoCode
 Kruskal(G)
@@ -40,6 +90,9 @@ def kruskal(graph):
 
 """
 Union Set
+
+Notes adapted from Schewchuck 2014
+https://people.eecs.berkeley.edu/~jrs/61b/lec/33
 
 
 We use a `sets` list to both record the parent of each item, and also the size of the set.
@@ -93,6 +146,10 @@ def same_component(sets, v, w):
 """
 Path Compression
 
+Notes adapted from Schewchuck 2014
+https://people.eecs.berkeley.edu/~jrs/61b/lec/33
+
+
 To find the root of a set 'x', we recursively look at the parent until we find the root (where sets[x] < 0).
 
 However, if the set's tree height is long, it can be inefficient to traverse the parents upward.
@@ -134,6 +191,16 @@ print kruskal(g)
 
 
 
+"""
+
+Psuedocode Adapted from Skiena 2008
+
+
+
+"""
+
+def dijkstra(graph):
+    pass
 
 
 
