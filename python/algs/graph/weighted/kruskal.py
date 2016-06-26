@@ -1,100 +1,40 @@
-# Algorithm Adapted from Skiena 2008
+# Eric Ren 2016
 
-# Kruskal(G)
-#   Put edges in Priority Queue ordered by weight
-#   count = 0
-#   While (count < n -1))
-#       get next edge (v,w)
-#       if (component(v) != component(w))
-#           Add edge to tree
-#           merge component(v) and component(w)
-#           count = count + 1
+from datastructs.graph import Graph
 
+"""
 
-# Assumptions:
-# - graph is an adjacency list
-# - vertices are labeled by unique integers
+Algorithm Adapted from Skiena 2008
 
-
-from collections import namedtuple
-from collections import defaultdict
-
-#TODO move graph to its own data structures
-# from ../../../data_structures import *
-
-Edge = namedtuple('Edge','weight v w')
-
-# NOTE: Consider this: does Graph really need to be a class? Can also create a Factory method to create graphs (adjancency lists)
-
-# Assume graph is composed of vertices labeled by integers
-class Graph:
-
-    """
-        Simple adjacency list implementation of a graph.
-
-        Each index in `self.vertices` represents a vertex.  
-        The value at `self.vertices[v]` is the list of edges for that vertex `v`.
-
-        [
-            vertex -> [(weight, dest_vertex), ...]
-            .
-            .
-            .
-        ]
+PsuedoCode
+Kruskal(G)
+  Put edges in Priority Queue ordered by weight
+  count = 0
+  While (count < n -1))
+      get next edge (v,w)
+      if (component(v) != component(w))
+          Add edge to tree
+          merge component(v) and component(w)
+          count = count + 1
 
 
-        Example:
+Assumptions:
+- graph is an adjacency list
+- vertices are labeled by unique integers
 
-        [
-            0  -> [(0, 1), (2, 2)]
-            1  -> [(3, 2), (1, 2)]
-            2  -> [(3, 2), (1, 2)]
-        ]
-
-    """
-
-    def __init__(self, num_vertices=10):
-        self.vertices = [ [] for _ in range(num_vertices) ]
-
-    def edges_of(self, vertex):
-        return self.vertices[vertex]
-
-
-    # New vertex will be the last index of internal `self.vertices` list
-    def add_vertex(self):
-        self.vertices.append([])
-
-    def rm_vertex(self, v):
-        pass
-
-    # Add directed edge (v -> w)
-    def add_edge(self, v, w, weight=1):
-        self.vertices[v].append((weight, w))
-
-    def rm_edge(self, v, w):
-        pass
-
-    # Generate a list of `Edge` namedtuples.
-    def all_edges(self):
-        all = []
-
-        for i in range(len(self.vertices)):
-            edges = self.edges_of(i)
-            e = Edge(edges[0], i, edges[1])
-            all.append(e)            
-
-        return all
-
+"""
 
 
 def kruskal(graph):
     edges = sorted(graph.all_edges(), key=lambda e: e.weight)
     
-    sets = [-1] * len(edges)
+    sets = [-1] * graph.num_vertices()
 
-    for edge in edges:
-        if not same_component(sets, edge.v, edge.w):
-            union(sets, edge.v, edge.w)
+    for e in edges:
+        if not same_component(sets, e.v, e.w):
+            union(sets, e.v, e.w)
+
+    return sets
 
 
 
@@ -138,12 +78,12 @@ def union(sets, v, w):
     root1 = find(sets, v)
     root2 = find(sets, w)
 
-    if root1 < root2:
-        sets[root2] = root1
+    if sets[root1] < sets[root2]:
         sets[root1] += sets[root2]
+        sets[root2] = root1
     else:
-        sets[root1] = root2
         sets[root2] += sets[root1]
+        sets[root1] = root2
 
 
 def same_component(sets, v, w):
@@ -182,11 +122,15 @@ def find(sets, x):
 
 
 
+
+# Simple Test
 g = Graph()
 g.add_edge(1, 0)
 g.add_edge(2, 0)
 
-g.all_edges()
+
+print kruskal(g)
+
 
 
 
