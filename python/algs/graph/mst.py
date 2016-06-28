@@ -191,18 +191,6 @@ print kruskal(g)
 
 
 
-"""
-
-Psuedocode Adapted from Skiena 2008
-
-
-
-"""
-
-def dijkstra(graph):
-    pass
-
-
 
 
 
