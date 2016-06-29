@@ -31,27 +31,34 @@ class Graph:
 
     """
 
-    def __init__(self, num_vertices=10):
-        self.vertices = [ [] for _ in range(num_vertices) ]
-
+    def __init__(self, num_vertices=10, directed=true):
+        self._vertices = [ [] for _ in range(num_vertices) ]
+        self.is_directed = directed        
 
     def num_vertices(self):
-        return len(self.vertices)
+        return len(self._vertices)
+
+
+    def get_vertices(self):
+        return list(range(self.num_vertices))
 
     def edges_of(self, vertex):
-        return self.vertices[vertex]
+        return self._vertices[vertex]
 
 
-    # New vertex will be the last index of internal `self.vertices` list
+    # New vertex will be the last index of internal `self._vertices` list
     def add_vertex(self):
-        self.vertices.append([])
+        self._vertices.append([])
 
     def rm_vertex(self, v):
         pass
 
-    # Add directed edge (v -> w)
     def add_edge(self, v, w, weight=1):
-        self.vertices[v].append((weight, w))
+        self._vertices[v].append((weight, w))
+
+        if not self.is_directed:
+            self._vertices[w].append((weight, v))
+
 
     def rm_edge(self, v, w):
         pass
@@ -60,7 +67,7 @@ class Graph:
     def all_edges(self):
         all = []
 
-        for i in range(len(self.vertices)):
+        for i in self.get_vertices():
             edges = self.edges_of(i)
 
             if len(edges) < 1:
