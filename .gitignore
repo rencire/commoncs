@@ -1,1 +1,6 @@
+.python-version
+.ruby-version
+.envrc
+__pycache__
+
 *.idea/
