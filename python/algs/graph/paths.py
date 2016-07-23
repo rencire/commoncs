@@ -20,6 +20,8 @@ Dikjstra(G, s, t)
         last = v_next
         known = union known with {v_next}
 
+NOTE:
+    - almost the same as Prim's algorithm
 """
 
 def dijkstra(graph, start):
