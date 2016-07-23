@@ -23,7 +23,10 @@ def prim(graph, start):
     parent = defaultdict(lambda: None)
     distance = defaultdict(lambda: float('inf'))
     tree = set()
+
+    distance[start] = 0
     v = start
+
 
     while v not in tree:
         tree.add(v)
