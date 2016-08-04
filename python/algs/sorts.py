@@ -1,3 +1,30 @@
+# Insertion Sort
+def insertion_sort(list):
+    for i in range(len(list)):
+        v = list[i]
+        j = i - 1
+        for j in range(i-1, -1, -1): 
+            if list[j] <= v:
+                break
+            else:
+                list[j+1] = list[j]
+                list[j] = v
+
+
+l0 = [2,0,20,5,3]
+l1 = [5,4,3,2,1]
+l2 = [1,2,3,6,8]
+insertion_sort(l0)
+insertion_sort(l1)
+insertion_sort(l2)
+print(l0)
+print(l1)
+print(l2)
+
+
+
+
+
 # mergesort
 def mergesort(list):
 
