@@ -48,6 +48,10 @@ def dijkstra(graph, start):
 
 
 
+
+"""
+- Slower than Dijkstra's, but capable of handling graphs with negative numbers
+"""
 def bellman_ford(graph):
     pass
 
