@@ -167,22 +167,22 @@ function concat(g1, g2) {
 }
 
 // es6
-function concat(...gens) {
-    var next = element(gens),
-        gen = next();
-
-    function recur() {
-        var value = gen();
-        if (value === undefined) {
-            gen = next();
-            if (gen !== undefined) {
-                return recur();
-            }
-        }
-        return value;
-    }
-
-}
+// function concat(...gens) {
+//     var next = element(gens),
+//         gen = next();
+//
+//     function recur() {
+//         var value = gen();
+//         if (value === undefined) {
+//             gen = next();
+//             if (gen !== undefined) {
+//                 return recur();
+//             }
+//         }
+//         return value;
+//     }
+//
+// }
 
 var con = concat(fromTo(0,3), fromTo(0, 2));
 console.log('\nconcat\n');
@@ -197,8 +197,12 @@ console.log(con()); // undefined
 // challenge 6
 
 function gensymf(char) {
+    var idx = 0;
 
-
+    return function() {
+        idx += 1;
+        return char + idx;
+    }
 }
 
 
@@ -211,4 +215,60 @@ console.log(geng()); // G1
 console.log(genh()); // H1
 console.log(geng()); // G2
 console.log(genh()); // H2
+
+
+function fibonaccif(a, b) {
+    var cnt = 0;
+    return function() {
+        var next;
+        if (cnt < 1) {
+            cnt += 1;
+            return a;
+        }
+
+        if (cnt < 2) {
+            cnt += 1;
+            return b;
+        }
+
+        next = a + b;
+        a = b;
+        b = next;
+        return next;
+    };
+
+}
+
+function fibonaccif(a,b) {
+    return function() {
+        var next = a;
+        a = b;
+        b += next;
+        return next;
+    };
+}
+
+function fibonaccif(a,b) {
+    return concat(
+        concat(
+            limit(identityf(a), 1),
+            limit(identityf(b), 1)
+        ), function fibonnaci() {
+            var next = a + b;
+            a = b;
+            b = next;
+            return next;
+        }
+    );
+}
+
+var fib = fibonaccif(0, 1);
+console.log('fibonaccif'); //0
+
+console.log(fib()); //0
+console.log(fib()); //1
+console.log(fib()); //1
+console.log(fib()); //2
+console.log(fib()); //3
+console.log(fib()); //5
 

@@ -148,3 +148,49 @@ var res2 = d.filter(function(cur, i, ary) {
 
 console.log(res2);
 */
+
+
+// Limited curry
+// - can only be curried once.
+function simple_curry(func) {
+   var slice = Array.prototype.slice,
+       args = slice.call(arguments, 1);
+   return function () {
+     return func.apply(null, args.concat(slice.call(arguments, 0)));
+   }
+}
+
+
+
+function add(a, b) {
+  return a + b;
+}
+
+var c_add = simple_curry(add, 1);
+console.log(c_add(2));
+
+
+// General curry function
+function add_4(a,b,c,d) {
+  return a + b + c + d;
+}
+
+function add_3(a,b,c) {
+  return a + b + c;
+}
+
+var c_add_4 = gen_curry(add_4);
+
+console.log(c_add_4(1)(2)(3)(4)); // 10
+console.log(c_add_3(1)(2)(3)); // 10
+
+
+function gen_curry(func) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  function more(next) {
+    if
+  }
+
+  return more;
+}
+
