@@ -1,4 +1,5 @@
-# Insertion Sort
+## Insertion Sort
+# - in-place
 def insertion_sort(list):
     for i in range(len(list)):
         v = list[i]
@@ -11,21 +12,59 @@ def insertion_sort(list):
                 list[j] = v
 
 
-l0 = [2,0,20,5,3]
-l1 = [5,4,3,2,1]
-l2 = [1,2,3,6,8]
-insertion_sort(l0)
-insertion_sort(l1)
-insertion_sort(l2)
-print(l0)
-print(l1)
-print(l2)
 
 
 
 
 
-# mergesort
+
+## Selection sort
+# - split list into 'sorted' and 'unsorted' halves
+# - select
+# - in-place
+
+# very imperative
+def selection_sort(list):
+    for i in range(len(list)):
+
+        min = list[i]
+        min_idx = i
+        for j in range(i+1, len(list)):
+            if list[j] < min:
+                min = list[j]
+                min_idx = j
+
+        tmp = list[i]
+        list[i] = list[min_idx]
+        list[min_idx] = tmp
+
+
+
+# less imperative
+def selection_sort1(list):
+    for i in range(len(list)):
+        min_idx = min(range(i, len(list)), key=list.__getitem__)
+        swap(list, i, min_idx)
+
+def swap(list, i, j):
+    tmp = list[i]
+    list[i] = list[j]
+    list[j] = tmp
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Mergesort
+
 def mergesort(list):
 
     if len(list) < 2:
@@ -100,4 +139,26 @@ def partition(lst, l, h):
 
 
 
+test_cases = [
+    [2,0,20,5,3],
+    [5,4,3,2,1],
+    [1,2,3,6,8],
+    [1,1,1,1,1]
+]
 
+def test_in_place_sorts(name, func):
+    print(name)
+    for test_case in test_cases:
+        func(test_case)
+        print(test_case)
+
+def test_out_of_place_sorts(name, func):
+    print(name)
+    for test_case in test_cases:
+        res = func(test_case)
+        print(res)
+
+
+test_in_place_sorts("Insertion sort", insertion_sort)
+test_in_place_sorts("Selection sort", selection_sort)
+test_in_place_sorts("Selection sort1", selection_sort1)
