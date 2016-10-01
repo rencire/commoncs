@@ -18,11 +18,10 @@ function output(text) {
 }
 
 // **************************************
-// The old-n-busted callback way
 
 function getFile(file) {
-	return new Promise(function(resolve){
-		fakeAjax(file,resolve);
+	return ASQ(function(done){
+		fakeAjax(file,done);
 	});
 }
 
@@ -32,20 +31,19 @@ function getFile(file) {
 // Render as each one finishes,
 // but only once previous rendering
 // is done.
-
-// ???
-
-var files = ['file1', 'file2', 'file3'];
-
-files.map(function(filename) {
-	return getFile(filename);
-}).reduce(function combine(chain, pr) {
-	return chain.then(function(){
-		return pr;
-	}).then(output);
-}, Promise.resolve() )
-	.then(function(){
-		output('Completed');
-	});
-// }, new Promise(function(resolve) { resolve();}) );
-
+ASQ()
+.seq.apply(null,
+	["file1","file2","file3"]
+	// Request all files at once in "parallel"
+	.map(getFile)
+	// Render output as each file finishes, but
+	// only once previous rendering is done
+	.map(function(sq){
+		return function(){
+			return sq.val(output);
+		};
+	})
+)
+.val(function(){
+	output("Complete!");
+});
