@@ -1,5 +1,7 @@
-## Insertion Sort
+# Insertion Sort
+# - sorted and unsorted halves of the array
 # - in-place
+
 def insertion_sort(list):
     for i in range(len(list)):
         v = list[i]
@@ -15,6 +17,10 @@ def insertion_sort(list):
 
 
 
+# TODO
+# - selection sort
+# - bubble sort
+# - heap sort
 
 
 
