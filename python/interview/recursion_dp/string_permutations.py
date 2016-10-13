@@ -1,3 +1,4 @@
+# CTCI 9.5
 # Write a function to generate all permuations of a string.
 
 
@@ -15,8 +16,8 @@ def gen_perms(s):
     if len(s) == 1:
         return {s}
 
-    return gen_perms_helper(s)
-
+    # return gen_perms_helper(s)
+    return gen_perms_helper2(s)
 
 def gen_perms_helper(s):
 
@@ -30,8 +31,9 @@ def gen_perms_helper(s):
     return perms
 
 
-# def gen_perms_helper2(s):
+def gen_perms_helper2(s):
 
+    return { p[:i] + s[-1] + p[i:] for i in range(len(s)) for p in gen_perms(s[0:-1])}
 
 
 
@@ -48,7 +50,7 @@ class MyTest(unittest.TestCase):
             ('ab', {'ab', 'ba'}),
             ('xyz', {'xyz', 'xzy',
                      'yxz', 'yzx',
-                     'zxy', 'zyx' }),
+                     'zxy', 'zyx'}),
 
         ]
 
