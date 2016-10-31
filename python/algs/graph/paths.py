@@ -51,6 +51,7 @@ def dijkstra(graph, start):
 
 """
 - Slower than Dijkstra's, but capable of handling graphs with negative numbers
+- https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
 """
 def bellman_ford(graph):
     pass
