@@ -100,6 +100,36 @@ def merge(left, right):
     
     return result
 
+
+# More functional Mergesort
+
+"""
+ note:
+ - very inefficient, no TCO in python
+
+"""
+
+def mergesort2(items):
+    if len(items) < 2:
+        return items
+    else:
+        m = len(items) // 2
+        return merge2( mergesort2(items[:m]), mergesort2(items[m:]) )
+
+
+def merge2(left, right):
+    if len(left) == 0:
+        return right
+    elif len(right) == 0:
+        return left
+    elif left[0] < right[0]:
+        return [ left[0] ] + merge2( left[1:], right )
+    else:
+        return [ right[0] ] + merge2( left, right[1:] )
+
+
+
+
 # qsort
 import random
 
